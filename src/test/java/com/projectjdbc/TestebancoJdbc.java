@@ -8,15 +8,14 @@ import com.projectjdbc.dao.UserPosDao;
 import com.projectjdbc.model.UserPosJava;
 
 public class TestebancoJdbc {
-    
+
     @Test
-    public void initbanco(){
+    public void initbanco() {
         UserPosDao userPosDao = new UserPosDao();
         UserPosJava userPosJava = new UserPosJava();
 
-        userPosJava.setId(5L);
-        userPosJava.setNome("maria");
-        userPosJava.setEmail("maria@gmail.com");
+        userPosJava.setNome("mara");
+        userPosJava.setEmail("mara@gmail.com");
 
         userPosDao.salvar(userPosJava);
     }
@@ -44,5 +43,21 @@ public class TestebancoJdbc {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void initAtualizar() {
+        try {
+            UserPosDao dao = new UserPosDao();
+            UserPosJava objeto = dao.buscar(5L);
+
+            objeto.setNome("nome mudado com metodo");
+
+            dao.atualizar(objeto);
+
+        } catch (Exception e) { 
+            e.printStackTrace();
+        }
+
     }
 }
