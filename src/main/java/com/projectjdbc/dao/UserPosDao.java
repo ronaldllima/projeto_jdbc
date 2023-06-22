@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.projectjdbc.conexaojdbc.SingleConnection;
+import com.projectjdbc.model.Telefone;
 import com.projectjdbc.model.UserPosJava;
 
 public class UserPosDao {
@@ -15,7 +16,7 @@ public class UserPosDao {
     private Connection connection;
 
     public UserPosDao() {
-        connection = SingleConnection.gConnection();
+        connection = SingleConnection.getConnection();
     }
 
     public void salvar(UserPosJava userPosJava) {
@@ -24,7 +25,6 @@ public class UserPosDao {
             String sql = "insert into userposjava(nome, email) values (?, ?)";
 
             PreparedStatement insert = connection.prepareStatement(sql);
-    
 
             insert.setString(1, userPosJava.getNome());
             insert.setString(2, userPosJava.getEmail());
@@ -36,6 +36,29 @@ public class UserPosDao {
                 connection.rollback();
                 e.printStackTrace();
             } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public void salvarTelefone(Telefone telefone) {
+
+        try {
+            String sql = "insert into telefoneuser(numero, tipo, id_userposjava) values (?, ?, ?)";
+
+            PreparedStatement insert = connection.prepareStatement(sql);
+            insert.setString(1, telefone.getNumero());
+            insert.setString(2, telefone.getTipo());
+            insert.setLong(3, telefone.getUsuario());
+
+            insert.execute();
+            connection.commit();
+
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+
                 e1.printStackTrace();
             }
         }
@@ -102,5 +125,21 @@ public class UserPosDao {
             e.printStackTrace();
         }
 
+    }
+
+    public void deletar(Long id) {
+        try {
+            String sql = "delete from userposjava where id = " + id;
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.execute();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
 }

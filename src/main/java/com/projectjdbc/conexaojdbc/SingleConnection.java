@@ -43,7 +43,7 @@ public class SingleConnection {
         }
     }
 
-    public static Connection gConnection() {
+    public static Connection getConnection() {
         return connection;
     }
 
