@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.projectjdbc.conexaojdbc.SingleConnection;
+import com.projectjdbc.model.BeanUserFone;
 import com.projectjdbc.model.Telefone;
 import com.projectjdbc.model.UserPosJava;
 
@@ -134,6 +135,59 @@ public class UserPosDao {
             statement.execute();
             connection.commit();
         } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public List<BeanUserFone> listaUserFone() {
+        List<BeanUserFone> beanUserFones = new ArrayList<BeanUserFone>();
+
+        String sql = "SELECT nome, numero, email FROM userposjava as userp";
+        sql += " inner join  telefoneuser as fone";
+        sql += " on fone.id_userposjava = userp.id";
+        sql += " where userp.id = fone.id_userposjava";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultado = preparedStatement.executeQuery();
+
+            while (resultado.next()) {
+                BeanUserFone userFone = new BeanUserFone();
+
+                userFone.setEmail(resultado.getString("email"));
+                userFone.setNome(resultado.getString("nome"));
+                userFone.setNumero(resultado.getString("numero"));
+
+                beanUserFones.add(userFone);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return beanUserFones;
+    }
+
+    public void deleteFoneByUser(Long idUser) {
+        
+        String sqlFone = "delete from telefoneuser where id_userposjava =" + idUser;
+        String sqlUser = "delete from userposjava where id =" + idUser;
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement(sqlFone);
+            statement.executeUpdate();
+            connection.commit();
+
+            statement = connection.prepareStatement(sqlUser);
+            statement.executeUpdate();
+            connection.commit();
+
+        } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException e1) {

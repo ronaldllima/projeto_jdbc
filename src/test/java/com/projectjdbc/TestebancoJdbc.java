@@ -1,10 +1,12 @@
 package com.projectjdbc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.projectjdbc.dao.UserPosDao;
+import com.projectjdbc.model.BeanUserFone;
 import com.projectjdbc.model.Telefone;
 import com.projectjdbc.model.UserPosJava;
 
@@ -84,5 +86,23 @@ public class TestebancoJdbc {
         telefone.setUsuario(7L);
 
         dao.salvarTelefone(telefone);
+    }
+
+    @Test
+    public void testeCarregaFoneUser(){
+        UserPosDao dao = new UserPosDao();
+
+        List<BeanUserFone> beanUserFones = new ArrayList<>();
+
+        beanUserFones = dao.listaUserFone();
+
+        beanUserFones.forEach(x -> System.out.println(x));
+    }
+
+    @Test
+    public void testeDeletePorId() {
+        UserPosDao dao = new UserPosDao();
+
+        dao.deleteFoneByUser(2L);
     }
 }
